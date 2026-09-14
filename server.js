@@ -10,9 +10,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database Setup (Vercel serverless has a read-only filesystem except for /tmp)
-const dbFile = process.env.NODE_ENV === 'production' ? path.join('/tmp', 'database.db') : './database.db';
-const db = new sqlite3.Database(dbFile, (err) => {
+// Database Setup (Back to local file since Railway has persistent storage)
+const db = new sqlite3.Database('./database.db', (err) => {
     if (err) console.error('Database connection error:', err.message);
     else console.log('Connected to SQLite database.');
 });
@@ -109,11 +108,7 @@ app.delete('/api/events/:id', (req, res) => {
     });
 });
 
-// Only listen locally; export app for Vercel serverless functions
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
-    });
-}
-
-module.exports = app;
+// Restore app.listen for Railway persistent server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
