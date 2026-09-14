@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Content Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <h1>Content Scheduling</h1>
+                <p>Curate & Schedule Your Socials</p>
+            </div>
+            
+            <div class="nav-controls">
+                <!-- Theme Switcher Button -->
+                <button id="theme-toggle-btn" class="btn btn-outline theme-toggle" title="Toggle Light/Dark Theme">🌙</button>
+
+                <div class="view-toggle">
+                    <button id="view-year" class="toggle-btn">Year</button>
+                    <button id="view-month" class="toggle-btn active">Month</button>
+                    <button id="view-week" class="toggle-btn">Week</button>
+                </div>
+
+                <div class="date-nav">
+                    <button id="prev-btn" class="btn btn-outline">&larr; Prev</button>
+                    <h2 id="current-date-label">Month Year</h2>
+                    <button id="next-btn" class="btn btn-outline">Next &rarr;</button>
+                </div>
+
+                <button id="open-modal-btn" class="btn btn-primary">+ Add Schedule</button>
+
+                <!-- User Profile & Logout -->
+                <div id="user-badge" class="user-badge hidden">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- App Layout Wrapper (Side-by-Side Sidebar and Calendar) -->
+        <div class="app-layout">
+            <aside class="todo-sidebar">
+                <h3>To-Do List</h3>
+                <div id="todo-list-container"></div>
+            </aside>
+            
+            <div class="main-calendar-area">
+                <!-- Dynamic View Wrapper -->
+                <main id="view-container" class="view-wrapper fade-in">
+                    <!-- Rendered dynamically via JS -->
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Sign In / Sign Up) -->
+    <div id="auth-modal" class="modal-backdrop">
+        <div class="modal auth-modal-box">
+            <div class="modal-header">
+                <h3 id="auth-title">Sign In</h3>
+            </div>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="auth-username">Username</label>
+                    <input type="text" id="auth-username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" placeholder="Enter password" required>
+                </div>
+
+                <div id="confirm-password-group" class="form-group hidden">
+                    <label for="auth-confirm-password">Confirm Password</label>
+                    <input type="password" id="auth-confirm-password" placeholder="Repeat password">
+                </div>
+
+                <p id="auth-error" class="auth-error-msg"></p>
+
+                <div class="modal-actions auth-actions">
+                    <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-full">Sign In</button>
+                </div>
+            </form>
+            <p class="auth-toggle-text">
+                <span id="auth-toggle-msg">Don't have an account?</span>
+                <a href="#" id="auth-toggle-btn">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Add / Edit Schedule Modal -->
+    <div id="event-modal" class="modal-backdrop hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Schedule Content</h3>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="event-form">
+                <input type="hidden" id="event-id">
+
+                <div class="form-group">
+                    <label for="post-title">Content Title / Topic</label>
+                    <input type="text" id="post-title" placeholder="e.g., Summer Collection Launch Reel" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="post-type">Format Type</label>
+                        <select id="post-type" required>
+                            <option value="Reel">🎬 Reel</option>
+                            <option value="Post">📸 Post / Photo</option>
+                            <option value="Story">⚡ Story</option>
+                            <option value="Preparation">📋 Preparation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="post-status">Status</label>
+                        <select id="post-status">
+                            <option value="Draft">Draft</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready to Post">Ready to Post</option>
+                            <option value="Published">Published</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="due-date">Posting Date</label>
+                        <input type="date" id="due-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="post-time-label" for="post-time">Posting Time</label>
+                        <select id="post-time" required>
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="prep-time-label" for="prep-time">Prep Time Required</label>
+                    <select id="prep-time">
+                        <!-- Populated dynamically via JS based on format type -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Prep Notes / Caption Draft</label>
+                    <textarea id="notes" rows="3" placeholder="Add hashtags, filming details, set prep materials..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="delete-btn" class="btn btn-danger hidden">Delete</button>
+                    <button type="submit" class="btn btn-primary">Save Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
